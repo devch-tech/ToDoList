@@ -8,6 +8,6 @@ public class ToDoListApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ToDoListApplication.class, args);
-		System.out.println("mmagvo");
+		System.out.println("mmagvo plus");
 	}
 }
