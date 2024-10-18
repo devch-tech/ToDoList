@@ -29,6 +29,8 @@ public class Tasks {
 
     @ManyToOne
     @JoinColumn (name = "usuario_id", nullable = false)
+    /* @JsonManagedReference y @JsonBackReference: Estas anotaciones
+    permiten manejar relaciones de uno a muchos sin causar ciclos */
     @JsonBackReference
     private Users usuarios;
 

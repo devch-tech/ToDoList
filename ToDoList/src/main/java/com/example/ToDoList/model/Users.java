@@ -37,6 +37,8 @@ public class Users {
     @Column (name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
+    /* @JsonManagedReference y @JsonBackReference: Estas anotaciones
+    permiten manejar relaciones de uno a muchos sin causar ciclos */
     @OneToMany (mappedBy = "usuarios", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Tasks> tareas;
