@@ -36,7 +36,7 @@ public class Users {
     @Column (name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-    @OneToMany (mappedBy = "usuarios", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany (mappedBy = "usuarios", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Tasks> tareas;
 
     @PrePersist

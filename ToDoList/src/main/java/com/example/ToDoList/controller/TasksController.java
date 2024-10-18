@@ -2,7 +2,9 @@ package com.example.ToDoList.controller;
 
 
 import com.example.ToDoList.model.Tasks;
+import com.example.ToDoList.model.Users;
 import com.example.ToDoList.service.TasksService;
+import com.example.ToDoList.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +20,29 @@ public class TasksController {
     @Autowired
     private TasksService tasksService;
 
-    @PostMapping
-    public ResponseEntity<?> create(@RequestBody Tasks tasks){
-        Tasks newTasks = tasksService.create(tasks);
-        if(newTasks != null){
+    @Autowired
+    private UsersService usersService;
+
+    @PostMapping("/batch")
+    public ResponseEntity<?> createBatch(@RequestBody List<Tasks> tasksList, @RequestParam Integer userId) {
+        Users usuario = usersService.findById(userId);
+
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El usuario especificado no existe.");
+        }
+
+        // Asociar el usuario a cada tarea
+        for (Tasks task : tasksList) {
+            task.setUsuarios(usuario);
+        }
+
+        // Guardar todas las tareas de forma batch
+        List<Tasks> newTasks = tasksService.createBatch(tasksList, userId);
+
+        if (newTasks != null && !newTasks.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(newTasks);
-        }else{
-            return ResponseEntity.status((HttpStatus.INTERNAL_SERVER_ERROR))
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Hubo un error al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.");
         }
     }
