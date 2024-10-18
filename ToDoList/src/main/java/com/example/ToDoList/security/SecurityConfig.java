@@ -19,7 +19,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+    /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
@@ -30,6 +30,6 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
 
         return http.build();
-    }
+    }*/
 }
 
