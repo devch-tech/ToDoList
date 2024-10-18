@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,16 +20,22 @@ public class UserController {
     @Autowired
     private UsersService usersService;
 
-    @PostMapping
-    public ResponseEntity<?> create(@RequestBody Users users){
-        Users newUsers = usersService.create(users);
-        if(newUsers != null){
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUsers);
-        }else{
-            return ResponseEntity.status((HttpStatus.INTERNAL_SERVER_ERROR))
-                    .body("Hubo un error al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.");
+    @PostMapping("/batch")
+    public ResponseEntity<?> create(@RequestBody List<Users> users) {
+        List<Users> newUsers = new ArrayList<>(); // Crear una lista para almacenar los nuevos usuarios
+
+        for (Users user : users) {
+            Users createdUser = usersService.create(user); // Crear cada usuario
+            if (createdUser != null) {
+                newUsers.add(createdUser); // Agregar a la lista de nuevos usuarios
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Hubo un error al procesar el usuario: " + user.getEmail());
+            }
         }
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUsers); // Devolver la lista de nuevos usuarios
     }
+
 
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Users users){
