@@ -32,7 +32,7 @@ public class TasksService implements ITasksService{
     }
 
     @Override
-    public List<Tasks> FindAll() {
+    public List<Tasks> findAll() {
         return tasksRepository.findAll();
     }
 

@@ -30,4 +30,10 @@ public class Tasks {
     @JoinColumn (name = "usuario_id", nullable = false)
     private Users usuario;
 
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = LocalDateTime.now();
+    }
+
 }
+

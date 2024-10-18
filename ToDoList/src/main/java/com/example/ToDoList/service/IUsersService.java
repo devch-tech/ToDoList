@@ -10,9 +10,9 @@ public interface IUsersService {
     Users create (Users user);
     Users update (Users user);
     Users findById (Integer id);
-    List<Users> findByAll();
+    Users findByEmail(String email);
+    List<Users> findAll();
     Users delete(Integer id);
     LoginResponse login(LoginRequest request);
     boolean validateToken(String token);
-    Users findByEmail(String email);
 }

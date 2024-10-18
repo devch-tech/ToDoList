@@ -8,6 +8,6 @@ public interface ITasksService {
     Tasks create(Tasks tasks);
     Tasks update(Tasks tasks);
     Tasks findById(Integer id);
-    List<Tasks> FindAll();
+    List<Tasks> findAll();
     Tasks delete(Integer id);
 }
