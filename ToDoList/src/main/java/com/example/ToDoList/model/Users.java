@@ -1,6 +1,7 @@
 package com.example.ToDoList.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +38,7 @@ public class Users {
     private LocalDateTime fechaCreacion;
 
     @OneToMany (mappedBy = "usuarios", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Tasks> tareas;
 
     @PrePersist

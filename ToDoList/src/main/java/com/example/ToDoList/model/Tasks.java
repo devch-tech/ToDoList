@@ -1,6 +1,7 @@
 package com.example.ToDoList.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class Tasks {
 
     @ManyToOne
     @JoinColumn (name = "usuario_id", nullable = false)
+    @JsonBackReference
     private Users usuarios;
 
     @PrePersist
