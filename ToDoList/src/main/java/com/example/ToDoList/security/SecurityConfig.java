@@ -22,12 +22,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Usa el nuevo enfoque para deshabilitar CSRF
+                .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users", "/users/batch", "/users/login").permitAll() // Permitir estos endpoints sin autenticación
-                        .anyRequest().authenticated() // Requiere autenticación para los demás endpoints
+                        .requestMatchers("/users/batch", "/users/create", "/users/login").permitAll() // Permitir sin autenticación
+                        .anyRequest().authenticated() // Requiere autenticación para otros endpoints
                 )
-                .httpBasic(Customizer.withDefaults()); // Para permitir autenticación básica si es necesario
+                .formLogin(Customizer.withDefaults()) // Opción de autenticación básica
+                .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
 
         return http.build();
     }
