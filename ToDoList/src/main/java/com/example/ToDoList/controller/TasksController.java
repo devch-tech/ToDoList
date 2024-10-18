@@ -5,6 +5,7 @@ import com.example.ToDoList.model.Tasks;
 import com.example.ToDoList.model.Users;
 import com.example.ToDoList.service.TasksService;
 import com.example.ToDoList.service.UsersService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,10 +49,17 @@ public class TasksController {
     }
 
     @PutMapping
-    public ResponseEntity<Object> update(@RequestBody Tasks tasks){
-        tasksService.update(tasks);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Object> update(@RequestBody Tasks tasks) {
+        try {
+            Tasks updatedTask = tasksService.update(tasks);
+            return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer idTasks){

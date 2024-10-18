@@ -4,6 +4,7 @@ import com.example.ToDoList.model.Tasks;
 import com.example.ToDoList.model.Users;
 import com.example.ToDoList.repository.TasksRepository;
 import com.example.ToDoList.repository.UsersRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,20 @@ public class TasksService implements ITasksService{
 
     @Override
     public Tasks update(Tasks tasks) {
-        return tasksRepository.save(tasks);
+        // Verificar si la tarea existe
+        Optional<Tasks> existingTask = tasksRepository.findById(tasks.getId());
+        if (existingTask.isPresent()) {
+            // Actualizar los campos necesarios
+            Tasks taskToUpdate = existingTask.get();
+            taskToUpdate.setTitulo(tasks.getTitulo());
+            taskToUpdate.setDescripcion(tasks.getDescripcion());
+            taskToUpdate.setUsuarios(tasks.getUsuarios()); // Asigna el usuario
+            return tasksRepository.save(taskToUpdate);
+        } else {
+            throw new EntityNotFoundException("Task not found");
+        }
     }
+
 
     @Override
     public Tasks findById(Integer id) {
