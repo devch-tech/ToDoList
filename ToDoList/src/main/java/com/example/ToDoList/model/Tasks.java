@@ -28,7 +28,7 @@ public class Tasks {
 
     @ManyToOne
     @JoinColumn (name = "usuario_id", nullable = false)
-    private Users usuario;
+    private Users usuarios;
 
     @PrePersist
     protected void onCreate() {
