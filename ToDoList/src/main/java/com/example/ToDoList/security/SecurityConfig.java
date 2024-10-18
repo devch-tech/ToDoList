@@ -24,8 +24,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/batch", "/users/create", "/users/login", "/tasks/batch").permitAll() // Permitir sin autenticación
-                        .anyRequest().authenticated() // Requiere autenticación para otros endpoints
+                        .anyRequest().permitAll() // Permitir acceso a todas las rutas
                 )
                 .formLogin(Customizer.withDefaults()) // Opción de autenticación básica
                 .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
@@ -33,3 +32,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
