@@ -19,17 +19,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /*@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Permitir acceso a todas las rutas
+                        .requestMatchers("/users/login").permitAll() // Permitir acceso al endpoint de login
+                        .requestMatchers("/token/validate").authenticated() // Requiere autenticación para validar token
+                        .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
                 )
                 .formLogin(Customizer.withDefaults()) // Opción de autenticación básica
                 .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
 
         return http.build();
-    }*/
+    }
+
 }
 
