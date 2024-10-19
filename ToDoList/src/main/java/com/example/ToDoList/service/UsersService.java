@@ -3,19 +3,19 @@ package com.example.ToDoList.service;
 import com.example.ToDoList.dto.LoginRequest;
 import com.example.ToDoList.dto.LoginResponse;
 import com.example.ToDoList.model.Users;
-import com.example.ToDoList.repository.TasksRepository;
 import com.example.ToDoList.repository.UsersRepository;
 import com.example.ToDoList.security.TokenService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import static javax.crypto.Cipher.SECRET_KEY;
 
 @Service
 public class UsersService implements IUsersService{
@@ -90,14 +90,19 @@ public class UsersService implements IUsersService{
     @Override
     public boolean validateToken(String token) {
         try {
-            // Verifica el token y obtiene los claims
-            Jwts.parser().setSigningKey(String.valueOf(SECRET_KEY)).parseClaimsJws(token);
-            return true; // El token es válido
-        } catch (Exception e) {
-            // Manejo de errores, el token no es válido
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(tokenService.getSecretKey().getBytes(StandardCharsets.UTF_8)) // Usa el método de TokenService
+                    .build()
+                    .parseClaimsJws(token);
+
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
+
+
+
 
     @Override
     public Users findByEmail(String email) {
