@@ -13,6 +13,7 @@ public interface IUsersService {
     Users findByEmail(String email);
     List<Users> findAll();
     Users delete(Integer id);
+    Users register(Users newUser);
     LoginResponse login(LoginRequest request);
     boolean validateToken(String token);
 }

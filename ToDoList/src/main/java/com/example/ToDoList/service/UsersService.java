@@ -30,10 +30,11 @@ public class UsersService implements IUsersService{
     private TokenService tokenService;
 
 
-
     @Override
-    public Users create(Users users) {
-        return usersRepository.save(users);
+    public Users create(Users user) {
+        // Cifrar la contraseña antes de guardar
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return usersRepository.save(user);
     }
 
     @Override
@@ -61,6 +62,12 @@ public class UsersService implements IUsersService{
             return users;
         }
         return null;
+    }
+
+    @Override
+    public Users register(Users newUser) {
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword())); // Cifrar la contraseña
+        return usersRepository.save(newUser); // Guardar el nuevo usuario
     }
 
     @Override

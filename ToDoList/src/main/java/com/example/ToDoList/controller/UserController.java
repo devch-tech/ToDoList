@@ -36,7 +36,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUsers); // Devolver la lista de nuevos usuarios
     }
 
-
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Users users){
         usersService.update(users);
@@ -87,6 +86,18 @@ public class UserController {
                     .body("El usuario no existe");
         }
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody Users newUser) {
+        Users createdUser = usersService.register(newUser); // Registrar el nuevo usuario
+        if (createdUser != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Hubo un error al registrar el usuario.");
+        }
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
