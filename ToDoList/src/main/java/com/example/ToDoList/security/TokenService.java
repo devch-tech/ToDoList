@@ -16,33 +16,37 @@ import java.util.Date;
 public class TokenService {
 
     @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private byte[] secretKey;  // Cambiar a byte array
 
     @Value("${jwt.expiration}")
-    private long EXPIRATION_TIME;
+    private long expirationTime;
 
     public String generateToken(Users users) {
         Claims claims = Jwts.claims().setSubject(users.getEmail()).build();
+
+
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
+        Date expiryDate = new Date(now.getTime() + expirationTime);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY.getBytes(StandardCharsets.UTF_8))
+                .signWith(SignatureAlgorithm.HS512, secretKey)  // Usar secretKey como byte array
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8))
+                    .setSigningKey(secretKey)  // Usar secretKey como byte array
                     .build()
                     .parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (JwtException e) {
+            // Registrar la excepción para facilitar la depuración
+            System.err.println("Token validation error: " + e.getMessage());
             return false;
         }
     }
