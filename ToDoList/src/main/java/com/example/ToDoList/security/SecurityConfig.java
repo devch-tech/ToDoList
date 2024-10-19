@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/login", "/users/batch", "users/register", "/users").permitAll() // Permitir acceso al endpoint de login
-                        .requestMatchers("/token/validate").authenticated() // Requiere autenticación para validar token
+                        .requestMatchers("/users/validate-token").permitAll() // Requiere autenticación para validar token
                         .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
                 )
                 .formLogin(Customizer.withDefaults()) // Opción de autenticación básica
