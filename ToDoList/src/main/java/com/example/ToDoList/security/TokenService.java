@@ -6,24 +6,31 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 
 @Service
 public class TokenService {
 
     @Value("${jwt.secret}")
-    private byte[] secretKey;  // Cambiar a byte array
+    private String secretKeyString;  // Mantenerlo como String
+
+    private byte[] secretKey; // Agregar este atributo
 
     @Value("${jwt.expiration}")
     private long expirationTime;
 
+    @PostConstruct
+    public void init() {
+        this.secretKey = Base64.getDecoder().decode(secretKeyString); // Decodifica a byte[]
+    }
+
     public String generateToken(Users users) {
         Claims claims = Jwts.claims().setSubject(users.getEmail()).build();
-
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationTime);
@@ -32,14 +39,14 @@ public class TokenService {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, secretKey)  // Usar secretKey como byte array
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(secretKey)  // Usar secretKey como byte array
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
 
