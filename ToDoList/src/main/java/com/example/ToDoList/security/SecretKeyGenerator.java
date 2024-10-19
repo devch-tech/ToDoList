@@ -6,9 +6,9 @@ import java.util.Base64;
 public class SecretKeyGenerator {
     public static void main(String[] args) {
         SecureRandom secureRandom = new SecureRandom();
-        byte[] randomBytes = new byte[24]; // Genera 24 bytes
+        byte[] randomBytes = new byte[64]; // 64 bytes para 512 bits
         secureRandom.nextBytes(randomBytes);
-        String secretKey = Base64.getEncoder().encodeToString(randomBytes); // Convierte a Base64
-        System.out.println("Generated SECRET_KEY: " + secretKey);
+        String secretKey = Base64.getEncoder().encodeToString(randomBytes);
+        System.out.println("Generada clave secreta: " + secretKey);
     }
 }

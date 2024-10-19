@@ -17,7 +17,7 @@ import java.util.Date;
 public class TokenService {
 
     @Value("${jwt.secret}")
-    private String secretKeyString;  // Mantenerlo como String
+    private String secretKeyString; // Mantenerlo como String
 
     private byte[] secretKey; // Agregar este atributo
 
@@ -29,6 +29,7 @@ public class TokenService {
         this.secretKey = Base64.getDecoder().decode(secretKeyString); // Decodifica a byte[]
     }
 
+    // Método para generar un token JWT
     public String generateToken(Users users) {
         Claims claims = Jwts.claims().setSubject(users.getEmail()).build();
 
@@ -43,6 +44,7 @@ public class TokenService {
                 .compact();
     }
 
+    // Método para validar el token
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
@@ -55,6 +57,22 @@ public class TokenService {
             // Registrar la excepción para facilitar la depuración
             System.err.println("Token validation error: " + e.getMessage());
             return false;
+        }
+    }
+
+    // Método para obtener el correo del usuario a partir del token
+    public String getUserEmailFromToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject(); // Devuelve el correo del usuario
+        } catch (JwtException e) {
+            // Registrar la excepción para facilitar la depuración
+            System.err.println("Error retrieving user email from token: " + e.getMessage());
+            return null;
         }
     }
 }
