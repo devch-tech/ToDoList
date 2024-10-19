@@ -87,22 +87,9 @@ public class UsersService implements IUsersService{
         return null;
     }
 
-    @Override
     public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(tokenService.getSecretKey().getBytes(StandardCharsets.UTF_8)) // Usa el método de TokenService
-                    .build()
-                    .parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
+        return tokenService.validateToken(token);
     }
-
-
-
 
     @Override
     public Users findByEmail(String email) {
