@@ -24,10 +24,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                        .requestMatchers("/users/login", "/users/batch", "users/register", "/users").permitAll() // Permitir acceso al endpoint de login
-                        .requestMatchers("/users/validate-token").permitAll() // Requiere autenticación para validar token
-                        .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Permitir Swagger
+                        .requestMatchers("/users/login", "/users/batch", "/users/register", "/users/validate-token").permitAll() // Permitir login y otros endpoints públicos
+                        .anyRequest().authenticated() // Requiere autenticación para el resto de solicitudes
                 )
                 .formLogin(Customizer.withDefaults()) // Opción de autenticación básica
                 .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
