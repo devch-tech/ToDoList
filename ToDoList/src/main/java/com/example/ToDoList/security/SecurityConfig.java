@@ -19,7 +19,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+    /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
@@ -32,6 +32,22 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
 
         return http.build();
+    }*/
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Permitir acceso a Swagger
+                        .requestMatchers("/users/login", "/users/batch", "/users/register", "/users/validate-token").permitAll() // Permitir acceso sin autenticación a ciertos endpoints
+                        .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
+                )
+                .formLogin(AbstractHttpConfigurer::disable) // Deshabilitar el formulario de inicio de sesión
+                .httpBasic(Customizer.withDefaults()); // Añadir autenticación básica
+
+        return http.build();
     }
+
 
 }
