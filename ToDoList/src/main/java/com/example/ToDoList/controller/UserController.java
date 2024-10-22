@@ -3,6 +3,7 @@ package com.example.ToDoList.controller;
 import com.example.ToDoList.dto.LoginRequest;
 import com.example.ToDoList.dto.LoginResponse;
 import com.example.ToDoList.model.Users;
+import com.example.ToDoList.security.TokenService;
 import com.example.ToDoList.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    TokenService tokenService;
 
     @PostMapping("/batch")
     public ResponseEntity<?> create(@RequestBody List<Users> users) {
@@ -114,14 +118,18 @@ public class UserController {
 
     @GetMapping("/validate-token")
     public ResponseEntity<String> validateToken(@RequestParam("token") String token) {
-        boolean isValid = usersService.validateToken(token);
+        // Validar el token y obtener el correo si es válido
+        String userEmail = tokenService.getUserEmailFromToken(token);
 
-        if (isValid) {
-            return ResponseEntity.status(HttpStatus.OK).body("Token válido.");
+        if (userEmail != null) {
+            // Si el correo no es null, significa que el token es válido
+            return ResponseEntity.status(HttpStatus.OK).body("Token válido. Correo: " + userEmail);
         } else {
+            // Si el correo es null, el token es inválido
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Token inválido.");
         }
     }
+
 
 }
